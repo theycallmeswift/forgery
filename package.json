@@ -1,0 +1,18 @@
+{
+  "author": "Mike Swift <theycallmeswift@gmail.com> (http://www.theycallmeswift.com/)",
+  "name": "swock",
+  "description": "URL response stubbing done right.",
+  "version": "0.0.0",
+  "repository": {
+    "url": ""
+  },
+  "engines": {
+    "node": "~0.6.2"
+  },
+  "dependencies": {
+    "underscore": "~1.2.4"
+  },
+  "devDependencies": {
+    "jasmine-node": "~1.0.13"
+  }
+}
