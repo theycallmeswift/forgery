@@ -9,9 +9,9 @@ module.exports = exports = (host, options = { }) ->
   if host
     return getInstance().addInterceptor(host, options)
   else
-    throw new Error("Swock: Host must be provided.")
+    throw new Error("Forgery: Host must be provided.")
 
-# Swock Version
+# Forgery Version
 exports.version = "0.0.0"
 
 # RequestHandler Instance

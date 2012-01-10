@@ -137,7 +137,7 @@ describe "RequestHandler", ->
       _.each badUrls, (url) ->
         expect( ->
           RequestHandler.generateHostKey(url)
-        ).toThrow(Error("Swock: Invalid URL supplied ('#{url}')"))
+        ).toThrow(Error("Forgery: Invalid URL supplied ('#{url}')"))
 
     it "appends a trailing slash only if it is missing", ->
       urls = [

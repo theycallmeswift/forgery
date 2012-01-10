@@ -73,7 +73,7 @@ class RequestHandler extends EventEmitter
 
       return "#{protocol}//#{parsedUrl.hostname}#{port}/"
     else
-      throw new Error("Swock: Invalid URL supplied ('#{urlString}')")
+      throw new Error("Forgery: Invalid URL supplied ('#{urlString}')")
 
   processRequest: (options, callback) ->
     console.log("Recieved Request")
