@@ -1,114 +1,72 @@
+{EventEmitter} = require 'events'
 fs = require 'fs'
+http = require 'http'
+https = require 'https'
 
 Forgery = require '../src/forgery'
 RequestHandler = require '../src/request_handler'
-Interceptor = require '../src/interceptor'
 
 describe "Forgery", ->
 
-  it "initializes a new RequestHandler as _instance", ->
-    expect(Forgery._instance).toBeInstanceOf(RequestHandler)
+  describe "Singleton", ->
+    it "always returns the same instance of the Forgery object", ->
+      Forgery2 = require '../src/forgery'
+      expect(Forgery2).toBe Forgery
 
-  it "has a version property that contains the current version of Forgery", ->
-    packageFile = fs.readFileSync("#{__dirname}/../package.json")
-    package = JSON.parse(packageFile)
+    it "has a version property that contains the current version of Forgery", ->
+      packageFile = fs.readFileSync("#{__dirname}/../package.json")
+      package = JSON.parse(packageFile)
 
-    expect(Forgery.version).toBe(package.version)
+      expect(Forgery.version).toBe(package.version)
 
-  describe "#Forgery", ->
-    it "calls #addInterceptor on the RequestHandler instance", ->
-      spyOn(Forgery._instance, 'addInterceptor')
-      Forgery("http://foo.bar", { baz: "lalala" })
-      expect(Forgery._instance.addInterceptor).toHaveBeenCalledWith("http://foo.bar", { baz: "lalala" })
+    it "extends the native EventEmitter", ->
+      expect(Forgery).toBeInstanceOf EventEmitter
 
-    it "returns an instance of Interceptor", ->
-      expect(Forgery("http://foo")).toBeInstanceOf(Interceptor)
+    it "sets config equal to the default configuration options", ->
+      expect(Forgery.config).toEqual Forgery.defaultConfig
 
-    it "returns the same Interceptor for a known hostname", ->
-      interceptor = Forgery("http://foo:80/")
-      expect(Forgery("http://foo:80")).toBe(interceptor)
-
-    it "returns a different Interceptor for known hostname but a different protocol or port", ->
-      interceptor = Forgery("http://foo:80/")
-      expect(Forgery("https://foo:80")).not.toBe(interceptor)
-      expect(Forgery("http://foo:8080")).not.toBe(interceptor)
-
-    it "throws an error if no host is supplied", ->
-      expect(() -> Forgery()).toThrow(Error("Forgery: Host must be provided."))
-
-  describe "EventEmitter interface", ->
-    emitter = undefined
-    eventFired = undefined
-
+  describe "#enable", ->
     beforeEach ->
-      emitter = Forgery._instance
-      eventFired = false
+      http.request = () ->
+      https.request = () ->
+      Forgery.enable()
 
-    it "has an interface for the #on method", ->
-      response = null
-      Forgery.on 'someEvent', (message) ->
-        response = message
-        eventFired = true
+    it "wraps the native http request method", ->
+      expect(http.request).toBe Forgery.processRequest
 
-      emitter.emit 'someEvent', 'foobar'
+    it "wraps the native https request method", ->
+      expect(https.request).toBe Forgery.processRequest
 
-      waitsFor () ->
-        eventFired = true
+  describe "#disable", ->
+    beforeEach ->
+      Forgery.disable()
 
-      runs () ->
-        expect(response).toBe "foobar"
+    it "restores the native http request method", ->
+      expect(http.request).not.toBe Forgery.processRequest
 
-    it "has #addListener as an alias for #on", ->
-      expect(Forgery.addListener).toBe Forgery.on
+    it "restores the native https request method", ->
+      expect(https.request).not.toBe Forgery.processRequest
 
-    it "has an interface for the #once method", ->
-      counter = 0
+  describe "#disableExternalRequests", ->
+    it "sets allowExternalRequests to false", ->
+      Forgery.config.allowExternalRequests = true
+      Forgery.disableExternalRequests()
+      expect(Forgery.config.allowExternalRequests).toBe false
 
-      Forgery.once 'someEvent', () ->
-        counter++
-        eventFired = true
+  describe "#disableLocalRequests", ->
+    it "sets allowLocalRequests to false", ->
+      Forgery.config.allowLocalRequests = true
+      Forgery.disableLocalRequests()
+      expect(Forgery.config.allowLocalRequests).toBe false
 
-      emitter.emit 'someEvent'
-      emitter.emit 'someEvent'
+  describe "#enableExternalRequests", ->
+    it "sets allowExternalRequests to true", ->
+      Forgery.config.allowExternalRequests = false
+      Forgery.enableExternalRequests()
+      expect(Forgery.config.allowExternalRequests).toBe true
 
-      waitsFor () ->
-        eventFired = true
-
-      runs () ->
-        expect(counter).toBe 1, "callback is only called once"
-
-    it "has an interface for the #removeListener method", ->
-      callbackOne = () -> true
-      callbackTwo = () -> true
-
-      Forgery.on 'someEvent', callbackOne
-      Forgery.on 'someEvent', callbackTwo
-
-      expect(emitter.listeners('someEvent').length).toBe 2, "number of listeners before removing"
-
-      Forgery.removeListener 'someEvent', callbackOne
-
-      expect(emitter.listeners('someEvent').length).toBe 1, "number of listeners after removing"
-      expect(emitter.listeners('someEvent')[0]).toBe callbackTwo, "only listener is callbackTwo"
-
-    it "has an interface for the #removeAllListeners method", ->
-      callback = () -> true
-
-      Forgery.on 'someEvent', callback
-      Forgery.on 'someEvent', callback
-      Forgery.on 'someOtherEvent', callback
-
-      expect(emitter.listeners('someEvent').length).toBe 2, "number of listeners on someEvent"
-      expect(emitter.listeners('someOtherEvent').length).toBe 1, "number of listeners on someOtherEvent"
-
-      Forgery.removeAllListeners('someOtherEvent')
-
-      expect(emitter.listeners('someOtherEvent').length).toBe 0, "number of listeners on someOtherEvent after removing"
-      expect(emitter.listeners('someEvent').length).toBe 2, "number of listeners on someEvent after removing someOtherEvent's listeners"
-
-      Forgery.removeAllListeners()
-
-      expect(emitter.listeners('someEvent').length).toBe 0, "number of listeners on someEvent after removing all listeners"
-
-    afterEach ->
-      emitter.removeAllListeners()
+  describe "#enableLocalRequests", ->
+    it "sets allowLocalRequests to true", ->
+      Forgery.config.allowLocalRequests = false
+      Forgery.enableLocalRequests()
+      expect(Forgery.config.allowLocalRequests).toBe true
