@@ -14,6 +14,14 @@ class FakeRequest extends ClientRequest
   # TODO: Write tests for this
 
   constructor: (options, cb) ->
+
+    # Fields for Forgery
+    @Forgery = {
+      fakeRequest: true,
+      options: options,
+      callback: cb
+    }
+
     OutgoingMessage.call(this)
 
     @agent = options.agent
@@ -62,8 +70,7 @@ class FakeRequest extends ClientRequest
   # This is a port of the native ClientRequest's end method.
   # This sets all the final header and body data as normal
   # and sets the request to finished as would be expected.
-  # Finally emits a 'finish' event (which may need to be
-  # changed to something else)
+  # Finally emits a 'requestEnded' event.
   #
   # @params {Mixed} Data to write to body (array of Integers or String)
   # @params {String} encoding defaults to UTF8
@@ -73,7 +80,7 @@ class FakeRequest extends ClientRequest
   end: (data, encoding) ->
     return false if @finished
 
-    @_implicitHeader()
+    @_implicitHeader() unless @_header
 
     if data && !@_hasBody
       console.error("This type of response MUST NOT have a body. " +
@@ -89,6 +96,6 @@ class FakeRequest extends ClientRequest
 
     @finished = true
 
-    @emit 'finish'
+    @emit 'requestEnded', this
 
 module.exports = FakeRequest
