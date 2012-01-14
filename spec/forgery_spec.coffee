@@ -32,9 +32,10 @@ describe "Forgery", ->
       expect(config).toEqual Forgery.defaultConfig
 
     it "makes the native http and https request methods accessible vi properties", ->
-      # TODO: Test that they are callable functions
       expect(Forgery._nativeHttpRequest).toBeDefined()
+      expect(Forgery._nativeHttpRequest).toBeTypeOf("function")
       expect(Forgery._nativeHttpsRequest).toBeDefined()
+      expect(Forgery._nativeHttpsRequest).toBeTypeOf("function")
 
   describe "#generateFakeRequest", ->
 
