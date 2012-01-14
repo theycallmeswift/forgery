@@ -47,16 +47,19 @@ class RequestHandler
   #
   # Protocol defaults to http. Auth and port are both optional.
   #
-  # @params {String} url string
+  # @params {Mixed} url string or url options object
   # @return {String} host key
   #
   # TODO: Don't change case of AUTH info
 
   @generateHostKey: (urlString) ->
-    _urlString = urlString.toLowerCase()
-    _urlString = "http://#{_urlString}" unless /^^https?:\/\//.test(_urlString)
+    if typeof urlString == 'string'
+      _urlString = urlString.toLowerCase()
+      _urlString = "http://#{_urlString}" unless /^^https?:\/\//.test(_urlString)
 
-    parsedUrl = url.parse _urlString
+      parsedUrl = url.parse _urlString
+    else
+      parsedUrl = urlString
 
     throw new Error("Forgery: Invalid URL supplied ('#{urlString}')") unless parsedUrl.host
 
@@ -68,6 +71,30 @@ class RequestHandler
       ''
 
     return "#{protocol}//#{auth}#{parsedUrl.host}/"
+
+  # isLocalRequest
+  #
+  # Takes in a FakeRequest Object and returns true if it is
+  # for a local request.
+  #
+  # @params {Object} Fake Request
+  # @return {Boolean}
+
+  @isLocalRequest: (fakeRequest) ->
+    key = RequestHandler.generateHostKey(fakeRequest.Forgery?.options)
+    return RequestHandler.isLocalhost(key)
+
+  # isExternalRequest
+  #
+  # Takes in a FakeRequest Object and returns true if it is
+  # for an external request.
+  #
+  # @params {Object} Fake Request
+  # @return {Boolean}
+
+  @isExternalRequest: (fakeRequest) ->
+    key = RequestHandler.generateHostKey(fakeRequest.Forgery?.options)
+    return !RequestHandler.isLocalhost(key)
 
   # isLocalhost
   #

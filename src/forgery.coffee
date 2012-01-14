@@ -4,6 +4,7 @@ http = require 'http'
 https = require 'https'
 FakeRequest = require './fake_request'
 FakeResponse = require './fake_response'
+RequestHandler = require './request_handler'
 
 # Cache the Native request functions so we can restore if needed
 nativeHttpRequest = http.request
@@ -36,6 +37,8 @@ class Forgery extends EventEmitter
     @_nativeHttpRequest = nativeHttpRequest
     @_nativeHttpsRequest = nativeHttpsRequest
 
+    @RequestHandler = new RequestHandler()
+
     # Enable the interceptor
     @enable()
 
@@ -63,22 +66,23 @@ class Forgery extends EventEmitter
   # request method. If the request is not allowed, we should throw an error.
   processRequest: (fakeRequest) ->
     # Complete psudo code
-    # match = @RequestHandler.isInterestedIn(fakeRequest)
-    # if match
+    match = @RequestHandler.findFirstMatch(fakeRequest)
+    if match
     #   @emit 'interceptedRequest', requestData
     #
     #   response = match.generateResponseFor(fakeRequest)
     #
     #   fakeRequest.emit 'response', response
     #   response.transmitData()
-    # else
-    #   # Generate a real request and delegate the fakeRequest
-    #   if isExternalRequest(fakeRequest) && !@allowExternalRequests
-    #     throw new Error("Forgery: External requests are disabled.")
-    #   else if isLocalRequest(fakeRequest) && !@allowLocalRequests
-    #     throw new Error("Forgery: Local requests are disabled.")
-    #
-    #   throw new Error("Forgery: Generating real requests not yet implemented")
+    else
+      # Generate a real request and delegate the fakeRequest
+      if RequestHandler.isExternalRequest(fakeRequest) && !@allowExternalRequests
+        throw new Error("Forgery: External requests are disabled.")
+      else if RequestHandler.isLocalRequest(fakeRequest) && !@allowLocalRequests
+        throw new Error("Forgery: Local requests are disabled.")
+
+      # TODO: Emit a real request and use fake request as a bridge
+      return
 
   # enable
   #

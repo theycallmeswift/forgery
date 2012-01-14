@@ -69,8 +69,17 @@ describe "RequestHandler", ->
 
   describe ".generateHostKey", ->
 
-    it "returns a host key for a url", ->
+    it "returns a host key for a url string", ->
       url = "http://foo:bar@somedomain.com:8000/"
+      expect(RequestHandler.generateHostKey(url)).toBe "http://foo:bar@somedomain.com:8000/"
+
+    it "returns a host key for a parsed url object", ->
+      url = {
+        protocol: 'http:',
+        auth: 'foo:bar',
+        host: 'somedomain.com:8000'
+      }
+
       expect(RequestHandler.generateHostKey(url)).toBe "http://foo:bar@somedomain.com:8000/"
 
     it "throws an error on invalid urls", ->
@@ -98,6 +107,26 @@ describe "RequestHandler", ->
     it "appends a trailing slash if missing", ->
       url = "http://foo:bar@somedomain.com:8000"
       expect(RequestHandler.generateHostKey(url)).toBe "http://foo:bar@somedomain.com:8000/"
+
+  describe ".isLocalRequest", ->
+
+    it "returns true for local requests", ->
+      fakeRequest = { Forgery: { options: { host: 'localhost' } } }
+      expect(RequestHandler.isLocalRequest(fakeRequest)).toBe true
+
+    it "returns false for non local requests", ->
+      fakeRequest = { Forgery: { options: { host: 'foo.bar' } } }
+      expect(RequestHandler.isLocalRequest(fakeRequest)).toBe false
+
+  describe ".isExternalRequest", ->
+
+    it "returns true for external requests", ->
+      fakeRequest = { Forgery: { options: { host: 'foo.bar' } } }
+      expect(RequestHandler.isExternalRequest(fakeRequest)).toBe true
+
+    it "returns false for non external requests", ->
+      fakeRequest = { Forgery: { options: { host: 'localhost' } } }
+      expect(RequestHandler.isExternalRequest(fakeRequest)).toBe false
 
   describe ".isLocalhost", ->
     it "returns true for localhost domains", ->

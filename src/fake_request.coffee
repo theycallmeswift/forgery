@@ -16,8 +16,9 @@ class FakeRequest extends ClientRequest
   constructor: (options, cb) ->
 
     # Fields for Forgery
+    @isFakeRequest = true
+
     @Forgery = {
-      fakeRequest: true,
       options: options,
       callback: cb
     }

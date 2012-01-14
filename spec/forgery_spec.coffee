@@ -53,6 +53,36 @@ describe "Forgery", ->
       @request.end()
       expect(Forgery.processRequest).toHaveBeenCalledWith(@request)
 
+  describe "#processRequest", ->
+
+    beforeEach ->
+      spyOn(Forgery.RequestHandler, 'findFirstMatch').andReturn(false)
+
+      @req = new FakeRequest({ host: 'foobar.com' })
+      @req.end("Terminator Terminated", 'utf8')
+
+    it "allows external requests when they are enabled", ->
+      Forgery.enableExternalRequests()
+      spyOn(RequestHandler, 'isExternalRequest').andReturn(true)
+      expect(() => Forgery.processRequest(@req) ).not.toThrow()
+
+    it "throws and error for external requests when they are disabled", ->
+      Forgery.disableExternalRequests()
+      spyOn(RequestHandler, 'isExternalRequest').andReturn(true)
+      expect(() => Forgery.processRequest(@req) ).toThrow(Error('Forgery: External requests are disabled.'))
+
+    it "allows local requests when they are enabled", ->
+      Forgery.enableLocalRequests()
+      spyOn(RequestHandler, 'isExternalRequest').andReturn(false)
+      spyOn(RequestHandler, 'isLocalRequest').andReturn(true)
+      expect(() => Forgery.processRequest(@req) ).not.toThrow()
+
+    it "throws and error for local requests when they are disabled", ->
+      Forgery.disableLocalRequests()
+      spyOn(RequestHandler, 'isExternalRequest').andReturn(false)
+      spyOn(RequestHandler, 'isLocalRequest').andReturn(true)
+      expect(() => Forgery.processRequest(@req) ).toThrow(Error('Forgery: Local requests are disabled.'))
+
   describe "#enable", ->
     # TODO: Show that requests are intercepted when enabled
 
