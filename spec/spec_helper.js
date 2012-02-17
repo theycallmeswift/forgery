@@ -1,0 +1,3 @@
+(function() {
+  Factophobe = require('../');
+})();

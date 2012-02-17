@@ -1,0 +1,21 @@
+{
+  "author": "Mike Swift <theycallmeswift@gmail.com> (http://theycallmeswift.com/)",
+  "name": "Factophobe",
+  "description": "A javascript fixture replacement package with testing support.",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://theycallmeswift@github.com/theycallmeswift/factophobe.git"
+  },
+  "main": "./lib/factophobe.js",
+  "scripts": {},
+  "engines": {
+    "node": "~0.6.9"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "jasmine-node": "~1.0.21"
+  },
+  "license": "MIT",
+  "optionalDependencies": {}
+}
