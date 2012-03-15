@@ -1,6 +1,6 @@
 (function() {
 
-  Factophobe = require('../');
+  Forgery = require('../');
 
   beforeEach(function() {
     this.addMatchers({

@@ -32,8 +32,4 @@ extend = (obj, others...) ->
 
   return obj
 
-Factophobe = @Factophobe = {}
-module?.exports          = Factophobe
-
-Factophobe.version       = '0.0.0'
-Factophobe.Factory       = Factory
+module.exports = Factory

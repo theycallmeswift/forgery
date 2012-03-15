@@ -1,7 +1,8 @@
-# Factophobe
+# Forgery
 
-Factophobe is a JSON fixtures library for Node.js.  Specifically it's designed
-to integrate well with popular testing frameworks like:
+Forgery is a set of testing tools for Node.js and client-side MVC
+applications.  Specifically it's designed to integrate well with
+popular testing frameworks like:
 
  - [Cucumber.js](https://github.com/cucumber/cucumber-js)
  - [Jasmine-Node](https://github.com/mhevery/jasmine-node)
@@ -9,14 +10,19 @@ to integrate well with popular testing frameworks like:
 
 ## Installation & Setup
 
-To install the latest stable version of Factophobe, use npm with the following
+To install the latest stable version of Forgery, use npm with the following
 command:
 
-    npm install factophobe
+    npm install forgery
+
+## Factory
+
+`Forgery.Factory` is a JSON fixtures library for Node.js.  It is usful for
+stubbing out API responses and creating JSON unique JSON objects for testing.
 
 ## An initial Warning
 
-__WARNING__: Factophobe is under heavy development and will not be subject to
+__WARNING__: Forgery is under heavy development and will not be subject to
 semantic versioning standards until version `0.0.1`. Please be aware that API
 changes may occur in the mean time.
 
