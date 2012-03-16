@@ -30,8 +30,11 @@ describe 'Factory', ->
       expect( -> Forgery.Factory('unknownKey') ).toThrow message
 
     it 'creates a new object with the default properties', ->
+      spyOn(Forgery.Factory, 'rack').andReturn('1a2b3c')
+
       subject = Forgery.Factory 'user'
       expect(subject).toEqual {
+        id: '1a2b3c'
         username: 'theycallmeswift'
         age: 22
         awesome: true
@@ -39,14 +42,24 @@ describe 'Factory', ->
       }
 
     it 'extends the defaults with any options supplied', ->
-      subject = Forgery.Factory 'user', { age: 50, extra: 'yeahyeah' }
+      subject = Forgery.Factory 'user', { id: 1, age: 50, extra: 'yeahyeah' }
       expect(subject).toEqual {
+        id: 1
         username: 'theycallmeswift'
         age: 50
         awesome: true
         occupation: 'rockstar'
         extra: 'yeahyeah'
       }
+
+    it 'throws an error when it runs out of unique ids', ->
+      rack = hat.rack(1, 2)
+      spyOn(Forgery.Factory, 'rack').andCallFake(rack)
+
+      user1 = Forgery.Factory 'user'
+      user2 = Forgery.Factory 'user'
+
+      expect( -> Forgery.Factory 'user' ).toThrow('too many ID collisions, use more bits')
 
   describe '.define', ->
     beforeEach ->

@@ -1,5 +1,6 @@
 (function() {
 
+  hat     = require('hat');
   Forgery = require('../');
 
   beforeEach(function() {

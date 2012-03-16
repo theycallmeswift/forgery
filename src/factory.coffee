@@ -1,7 +1,11 @@
+hat  = require 'hat'
+
 class Factory
   # Class Properties
 
   @factories: {}
+
+  @rack: hat.rack()
 
   # Class Methods
 
@@ -15,7 +19,7 @@ class Factory
     factoryDefinition = Factory.factories[factoryName]
     throw new Error("Error: Factory with key '#{factoryName}' is not defined") unless factoryDefinition
 
-    return new extend({}, factoryDefinition.defaults, options)
+    return new extend({ id: Factory.rack() }, factoryDefinition.defaults, options)
 
   @define: (name, attributes = {}) ->
     throw new Error('Error: Factory.define requires a key') unless name
