@@ -5,7 +5,7 @@ class Factory
 
   @factories: {}
 
-  @rack: hat.rack()
+  @rack: hat.rack(96)
 
   # Class Methods
 

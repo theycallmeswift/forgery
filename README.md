@@ -20,6 +20,33 @@ command:
 `Forgery.Factory` is a JSON fixtures library for Node.js.  It is usful for
 stubbing out API responses and creating JSON unique JSON objects for testing.
 
+### Setup and Usage
+
+Forgery's Factory functionality is heavily inspired by [Factory
+Girl](https://github.com/thoughtbot/factory_girl).  In order to use it, all
+you have to do is require it and define some factories.  For example:
+
+    var Factory = require('forgery').Factory;
+
+    Factory.define('MyFactory', {
+      "foo": "bar",
+    });
+
+    ... etc ...
+
+Now when ever you need to create a new factory, you have access to it through
+the `Factory` method:
+
+    Factory('MyFactory') 
+    //=> { id: '9e55f9ad9411aea49d554ae4e0b5c306', foo:'bar' }
+
+We can also easily override the default attributes by passing in an options
+hash as a second parameter.
+
+    Factory('MyFactory', { foo: 'tab' }) 
+    //=> { id: '9e55f9ad9411aea49d554ae4e0b5c306', foo:'tab' }
+
+
 ## An initial Warning
 
 __WARNING__: Forgery is under heavy development and will not be subject to
