@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/theycallmeswift/forgery.png)](http://travis-ci.org/theycallmeswift/forgery)
 # Forgery
 
 Forgery is a set of testing tools for Node.js and client-side MVC
