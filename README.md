@@ -57,7 +57,7 @@ can specify to use a differnt ID field or none at all using the third parameter.
     Factory('MyFactory', { foo: 'tab' }, { idField: '_id' }) 
     //=> { _id: '9e55f9ad9411aea49d554ae4e0b5c306', foo:'tab' }
 
-    // No ID field (must set explicitly to false
+    // No ID field (must set explicitly to false)
     Factory('MyFactory', { foo: 'tab' }, { idField: false }) 
     //=> { foo:'tab' }
 
