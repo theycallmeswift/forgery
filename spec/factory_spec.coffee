@@ -41,6 +41,29 @@ describe 'Factory', ->
         occupation: 'rockstar'
       }
 
+    it 'allows you to specify the id field using the idField option', ->
+      spyOn(Forgery.Factory, 'rack').andReturn('1a2b3c')
+
+      subject = Forgery.Factory 'user', {}, { idField: '_id' }
+      expect(subject).toEqual {
+        _id: '1a2b3c'
+        username: 'theycallmeswift'
+        age: 22
+        awesome: true
+        occupation: 'rockstar'
+      }
+
+    it 'returns no id field if idField is set to false', ->
+      spyOn(Forgery.Factory, 'rack').andReturn('1a2b3c')
+
+      subject = Forgery.Factory 'user', {}, { idField: false }
+      expect(subject).toEqual {
+        username: 'theycallmeswift'
+        age: 22
+        awesome: true
+        occupation: 'rockstar'
+      }
+
     it 'extends the defaults with any options supplied', ->
       subject = Forgery.Factory 'user', { id: 1, age: 50, extra: 'yeahyeah' }
       expect(subject).toEqual {

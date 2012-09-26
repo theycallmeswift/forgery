@@ -47,6 +47,19 @@ hash as a second parameter.
     Factory('MyFactory', { foo: 'tab' }) 
     //=> { id: '9e55f9ad9411aea49d554ae4e0b5c306', foo:'tab' }
 
+#### Changing the ID field
+
+Sometimes you will want the ID field to have a different format.  For instance,
+if you are mocking Mongo objects, they have an `_id` attribute instead.  You
+can specify to use a differnt ID field or none at all using the third parameter.
+
+    // Alternative ID field
+    Factory('MyFactory', { foo: 'tab' }, { idField: '_id' }) 
+    //=> { _id: '9e55f9ad9411aea49d554ae4e0b5c306', foo:'tab' }
+
+    // No ID field (must set explicitly to false
+    Factory('MyFactory', { foo: 'tab' }, { idField: false }) 
+    //=> { foo:'tab' }
 
 ## An initial Warning
 

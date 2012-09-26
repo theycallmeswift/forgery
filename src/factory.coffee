@@ -13,13 +13,20 @@ class Factory
     for factory of @factories
       delete @factories[factory]
 
-  constructor: (factoryName, options = {}) ->
+  constructor: (factoryName, attributes = {}, options = {}) ->
     throw new Error('Error: Factory name is required') unless factoryName
 
     factoryDefinition = Factory.factories[factoryName]
     throw new Error("Error: Factory with key '#{factoryName}' is not defined") unless factoryDefinition
 
-    return new extend({ id: Factory.rack() }, factoryDefinition.defaults, options)
+    base = {}
+
+    if options.idField
+      base[options.idField] = Factory.rack()
+    else if options.idField != false
+      base.id = Factory.rack()
+
+    return new extend(base, factoryDefinition.defaults, attributes)
 
   @define: (name, attributes = {}) ->
     throw new Error('Error: Factory.define requires a key') unless name
