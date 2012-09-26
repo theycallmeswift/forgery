@@ -2,7 +2,7 @@
   "author": "Mike Swift <theycallmeswift@gmail.com> (http://theycallmeswift.com/)",
   "name": "forgery",
   "description": "A set of testing tools for Node and MVC apps.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "repository": {
     "type": "git",
     "url": "https://theycallmeswift@github.com/theycallmeswift/forgery.git"
